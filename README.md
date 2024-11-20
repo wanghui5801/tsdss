@@ -1,4 +1,4 @@
-# TSDS (Time Series Description and Surrogate)
+# TSDS
 
 TSDS is a comprehensive Python package for time series analysis and surrogate data generation. It provides a wide range of tools for statistical analysis, preprocessing, feature extraction, and surrogate data generation for both univariate and multivariate time series.
 
@@ -224,9 +224,6 @@ stat_samples_pd = stationary_bootstrap(ts_series, mean_block_length=50, num_boot
 #    - More suitable for time series with varying dependence structures
 ```
 
-## Documentation
-
-For detailed documentation and API reference, please visit our [documentation page](https://github.com/wanghui5801/tsds).
 
 ## Performance
 

@@ -21,16 +21,29 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -e .[test]
-    
-    - name: Install C++ compiler
+    - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++
-    
+        sudo apt-get install -y g++ python3-dev
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install build wheel setuptools numpy
+        
+    - name: Create utils directory
+      run: |
+        mkdir -p utils
+        touch utils/__init__.py
+        
+    - name: Install package
+      run: |
+        pip install .
+        
+    - name: Install test dependencies
+      run: |
+        pip install pytest pytest-cov pandas scipy statsmodels matplotlib scikit-learn
+        
     - name: Run tests
       run: |
-        pytest tests/ -v
+        python -m pytest tests/ -v
