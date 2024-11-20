@@ -32,18 +32,25 @@ jobs:
         python -m pip install build wheel setuptools
         python -m pip install numpy --no-build-isolation
         
-    - name: Setup package structure
+    - name: Create package structure
       run: |
+        # Create package directories
         mkdir -p tsds/utils
         touch tsds/utils/__init__.py
+        # Move C++ extensions to correct location
+        cp src/*.cpp tsds/utils/
         
-    - name: Build package
+    - name: Modify setup.py paths
+      run: |
+        sed -i 's|"src/|"tsds/utils/|g' setup.py
+        
+    - name: Build extensions
       run: |
         python setup.py build_ext --inplace
         
     - name: Install package
       run: |
-        pip install -e .
+        python setup.py develop
         
     - name: Install test dependencies
       run: |
@@ -51,4 +58,4 @@ jobs:
         
     - name: Run tests
       run: |
-        PYTHONPATH=$PYTHONPATH:$(pwd) python -m pytest tests/ -v
+        python -m pytest tests/ -v
