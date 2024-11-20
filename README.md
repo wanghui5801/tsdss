@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo/logo.png" alt="TSDSS Logo" width="200"/>
+  <img src="https://ice.frostsky.com/2024/11/20/3b10b65c851c89af8ac5e11a72db1244.webp" alt="TSDSS Logo" width="200"/>
 </div>
 
 # TSDSS 📊 🔮 📈

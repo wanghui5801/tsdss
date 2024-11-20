@@ -52,7 +52,7 @@ setup(
     description="Time Series Description",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/wanghui5801/tsds",
+    url="https://github.com/wanghui5801/tsdss",
     packages=setuptools.find_packages(),
     ext_modules=cpp_extension,
     cmdclass={"build_ext": build_ext},
