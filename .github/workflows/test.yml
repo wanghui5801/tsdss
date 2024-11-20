@@ -29,16 +29,21 @@ jobs:
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install build wheel setuptools numpy
+        python -m pip install build wheel setuptools
+        python -m pip install numpy --no-build-isolation
         
-    - name: Create utils directory
+    - name: Setup package structure
       run: |
-        mkdir -p utils
-        touch utils/__init__.py
+        mkdir -p tsds/utils
+        touch tsds/utils/__init__.py
+        
+    - name: Build package
+      run: |
+        python setup.py build_ext --inplace
         
     - name: Install package
       run: |
-        pip install .
+        pip install -e .
         
     - name: Install test dependencies
       run: |
@@ -46,4 +51,4 @@ jobs:
         
     - name: Run tests
       run: |
-        python -m pytest tests/ -v
+        PYTHONPATH=$PYTHONPATH:$(pwd) python -m pytest tests/ -v
