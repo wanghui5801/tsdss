@@ -8,7 +8,6 @@
 [![Python](https://img.shields.io/pypi/pyversions/tsdss.svg)](https://pypi.org/project/tsdss/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://pepy.tech/badge/tsdss)](https://pepy.tech/project/tsdss)
-[![Documentation Status](https://readthedocs.org/projects/tsdss/badge/?version=latest)](https://tsdss.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://github.com/wanghui5801/tsdss/workflows/Python%20Tests/badge.svg)](https://github.com/wanghui5801/tsdss/actions)
 
 
