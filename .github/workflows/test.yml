@@ -34,26 +34,19 @@ jobs:
         
     - name: Create package structure
       run: |
-        # Create package directories
         mkdir -p tsds/utils
         touch tsds/utils/__init__.py
-        mkdir -p build/lib.$(python -c "import distutils.util; print(distutils.util.get_platform())")-${{ matrix.python-version }}/utils
         
-    - name: Build C++ extensions
+    - name: Build and install package
       run: |
-        for ext in trend skew kurtosis lb acf; do
-          g++ -shared -fPIC \
-            -I$(python -c "import numpy; print(numpy.get_include())") \
-            -I$(python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())") \
-            src/${ext}.cpp \
-            -o build/lib.$(python -c "import distutils.util; print(distutils.util.get_platform())")-${{ matrix.python-version }}/utils/${ext}$(python-config --extension-suffix) \
-            -std=c++11
-        done
+        # First build the extensions
+        python setup.py build_ext
         
-    - name: Install package
-      run: |
-        cp -r build/lib.$(python -c "import distutils.util; print(distutils.util.get_platform())")-${{ matrix.python-version }}/utils/* tsds/utils/
-        pip install -e .
+        # Copy the built extensions to the package directory
+        find build/lib.*/utils -name "*.so" -exec cp {} tsds/utils/ \;
+        
+        # Install the package in development mode
+        PYTHONPATH=$PWD pip install -e .
         
     - name: Install test dependencies
       run: |
@@ -61,4 +54,4 @@ jobs:
         
     - name: Run tests
       run: |
-        PYTHONPATH=$PYTHONPATH:$(pwd) python -m pytest tests/ -v
+        python -m pytest tests/ -v
