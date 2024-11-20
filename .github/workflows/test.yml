@@ -37,16 +37,13 @@ jobs:
         mkdir -p tsds/utils
         touch tsds/utils/__init__.py
         
-    - name: Build and install package
+    - name: Build package
       run: |
-        # First build the extensions
-        python setup.py build_ext
+        python -m build --wheel
         
-        # Copy the built extensions to the package directory
-        find build/lib.*/utils -name "*.so" -exec cp {} tsds/utils/ \;
-        
-        # Install the package in development mode
-        PYTHONPATH=$PWD pip install -e .
+    - name: Install package
+      run: |
+        pip install dist/*.whl
         
     - name: Install test dependencies
       run: |
@@ -54,4 +51,4 @@ jobs:
         
     - name: Run tests
       run: |
-        python -m pytest tests/ -v
+        pytest tests/ -v
