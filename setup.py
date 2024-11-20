@@ -3,7 +3,7 @@ from setuptools.command.build_ext import build_ext
 import sys
 import setuptools
 import numpy as np
-
+from setuptools import setup, find_packages
 
 cpp_extension = [
     Extension(
@@ -35,22 +35,15 @@ cpp_extension = [
         extra_compile_args=["-std=c++11"], 
     ),
     Extension(
-        "utils.adf", 
-        sources=["src/adftest.cpp"],
-        include_dirs=[np.get_include()],
-        language="c++",
-        extra_compile_args=["-std=c++11"], 
-    ),
-    Extension(
         "utils.acf", 
         sources=["src/acf.cpp"],
         include_dirs=[np.get_include()],
         language="c++",
         extra_compile_args=["-std=c++11"], 
-    )
+    ),
 ]
 
-# setup 函数的配置
+# Setup function configuration
 setup(
     name="tsds",
     version="0.1.0",
@@ -68,7 +61,21 @@ setup(
         'pandas>=1.0.0',
         'statsmodels>=0.13.0',
         'matplotlib>=3.0.0',
+        'scipy>=1.6.0',
+        'scikit-learn>=0.24.0',
     ],
+    extras_require={
+        'test': [
+            'pytest>=6.0',
+            'pytest-cov>=2.0',
+            'numpy>=1.19.0',
+            'pandas>=1.0.0',
+            'scipy>=1.6.0',
+            'statsmodels>=0.13.0',
+            'matplotlib>=3.0.0',
+            'scikit-learn>=0.24.0',
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: C++",

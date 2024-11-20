@@ -4,7 +4,7 @@
 #include <Python.h>
 #include <numpy/arrayobject.h>
 
-// 修改函数定义以支持关键字参数
+// Modify function definition to support keyword arguments
 static char seasonal_decompose_doc[] = 
     "seasonal_decompose(x, period=12)\n\n"
     "Decompose time series into trend, seasonal, and residual components.\n"
@@ -19,12 +19,12 @@ static char seasonal_decompose_doc[] =
 
 static PyObject* seasonal_decompose(PyObject* self, PyObject* args, PyObject* kwargs) {
     PyArrayObject *input_array;
-    int period = 12;  // 默认值
+    int period = 12;  // Default value
     
-    // 定义关键字参数列表
+    // Define keyword argument list
     static char* kwlist[] = {"x", "period", NULL};
     
-    // 使用 PyArg_ParseTupleAndKeywords 来解析参数
+    // Use PyArg_ParseTupleAndKeywords to parse arguments
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!|i", kwlist,
                                     &PyArray_Type, &input_array, &period)) {
         return NULL;
@@ -110,15 +110,15 @@ static PyObject* seasonal_decompose(PyObject* self, PyObject* args, PyObject* kw
     return result_dict;
 }
 
-// 修改方法表以支持关键字参数
+// Modify method table to support keyword arguments
 static PyMethodDef TrendMethods[] = {
     {"decompose", (PyCFunction)seasonal_decompose, 
-     METH_VARARGS | METH_KEYWORDS,  // 添加 METH_KEYWORDS 标志
-     seasonal_decompose_doc},  // 添加文档字符串
+     METH_VARARGS | METH_KEYWORDS,  // Add METH_KEYWORDS flag
+     seasonal_decompose_doc},  // Add documentation string
     {NULL, NULL, 0, NULL}
 };
 
-// 模块结构定义保持不变
+// Module structure definition remains unchanged
 static struct PyModuleDef trendmodule = {
     PyModuleDef_HEAD_INIT,
     "trend",
@@ -127,7 +127,7 @@ static struct PyModuleDef trendmodule = {
     TrendMethods
 };
 
-// 初始化函数保持不变
+// Initialization function remains unchanged
 PyMODINIT_FUNC PyInit_trend(void) {
     import_array();
     return PyModule_Create(&trendmodule);
