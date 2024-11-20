@@ -1,17 +1,18 @@
-<pre style="color: #1E3D59">
-   _____  _____ ____  _____ 
-  |_   _|/ ____|  _ \/ ____|
-    | | | (___ | | | | (___  
-    | |  \___ \| | | |\___ \ 
-   _| |_ ____) | |_| |____) |
-  |_____|_____/|____/|_____/ 
-                             
-    Time Series Description
-</pre>
+<div align="center">
+  <img src="logo/logo.png" alt="TSDSS Logo" width="200"/>
+</div>
 
-# TSDS
+# TSDSS 📊 🔮 📈
 
-TSDS is a comprehensive Python package for time series analysis and surrogate data generation. It provides a wide range of tools for statistical analysis, preprocessing, feature extraction, and surrogate data generation for both univariate and multivariate time series.
+[![PyPI version](https://badge.fury.io/py/tsdss.svg)](https://badge.fury.io/py/tsdss)
+[![Python](https://img.shields.io/pypi/pyversions/tsdss.svg)](https://pypi.org/project/tsdss/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://pepy.tech/badge/tsdss)](https://pepy.tech/project/tsdss)
+[![Documentation Status](https://readthedocs.org/projects/tsdss/badge/?version=latest)](https://tsdss.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://github.com/wanghui5801/tsdss/workflows/Python%20Tests/badge.svg)](https://github.com/wanghui5801/tsdss/actions)
+
+
+TSDSS is a comprehensive Python package for time series analysis and surrogate data generation. It provides a wide range of tools for statistical analysis, preprocessing, feature extraction, and surrogate data generation for both univariate and multivariate time series.
 
 ## Features
 
@@ -42,12 +43,12 @@ TSDS is a comprehensive Python package for time series analysis and surrogate da
 ## Installation
 
 ```bash
-pip install tsds
+pip install tsdss
 ```
 
 ## Input Data Format
 
-TSDS accepts the following input formats:
+TSDSS accepts the following input formats:
 - NumPy arrays (1D for univariate, 2D for multivariate)
 - Pandas Series (for univariate)
 - Pandas DataFrame (for multivariate)
@@ -63,7 +64,7 @@ Example shapes:
 ```python
 import numpy as np
 import pandas as pd
-from tsds import ts_statistics, plot_decomposition, calculate_entropy
+from tsdss  import ts_statistics, plot_decomposition, calculate_entropy
 
 # Basic time series statistics
 ts = np.random.normal(0, 1, 1000)
@@ -81,7 +82,7 @@ print(f"Entropy: {entropy}")
 ### Time Series Preprocessing
 
 ```python
-from tsds import interpolate_missing, detect_outliers, normalize_ts, resample_ts
+from tsdss import interpolate_missing, detect_outliers, normalize_ts, resample_ts
 
 # Handle missing values
 ts = pd.Series([1, np.nan, 3, np.nan, 5])
@@ -103,7 +104,7 @@ ts_resampled = resample_ts(ts, freq='W', method='mean')
 ### Feature Extraction
 
 ```python
-from tsds import extract_time_features, extract_freq_features
+from tsdss import extract_time_features, extract_freq_features
 
 # Extract time domain features
 ts = np.random.normal(0, 1, 1000)
@@ -118,7 +119,7 @@ print("Frequency domain features:", freq_features)
 ### Correlation Analysis
 
 ```python
-from tsds import mutual_information, kendall_correlation
+from tsdss import mutual_information, kendall_correlation
 
 # Calculate mutual information
 x = np.random.normal(0, 1, 1000)
@@ -134,7 +135,7 @@ print(f"Kendall Correlation: {kendall}")
 ### Surrogate Data Generation
 
 ```python
-from tsds import (
+from tsdss  import (
     iaaft, iaaft_plus, ipft, aiaaft, 
     multivariate_iaaft, block_bootstrap, 
     stationary_bootstrap
@@ -163,8 +164,8 @@ stat_samples = stationary_bootstrap(ts, mean_block_length=50, num_bootstrap=100)
 
 ### Wavelet Analysis
 
-```python
-from tsds import dwt, idwt, iaawt
+```python  
+from tsdss import dwt, idwt, iaawt
 
 # Perform discrete wavelet transform
 ts = np.random.normal(0, 1, 1024)  # Length should be power of 2
@@ -180,7 +181,7 @@ surrogate = iaawt(ts, n_iterations=1000, num_surrogates=1)[0]
 ### Advanced Multivariate Analysis
 
 ```python
-from tsds import (
+from tsdss import (
     mvts_surrogate_s_transform, 
     mvts_surrogate_wavelet,
     mvts_surrogate_pca,
@@ -200,7 +201,7 @@ surrogate_copula = copula_surrogate(data, num_surrogates=1)[0]
 ### Bootstrap Methods
 
 ```python
-from tsds import block_bootstrap, stationary_bootstrap
+from tsdss import block_bootstrap, stationary_bootstrap
 
 # 1. Block Bootstrap
 # Fixed block length, suitable for data with strong local dependencies

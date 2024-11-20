@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import pytest
-from tsds import (
+from tsdss import (
     ts_statistics,
     normalize_ts,
     calculate_entropy,

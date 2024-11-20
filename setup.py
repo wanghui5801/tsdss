@@ -45,7 +45,7 @@ cpp_extension = [
 
 # Setup function configuration
 setup(
-    name="tsds",
+    name="tsdss",
     version="0.1.0",
     author="Hui Wang",
     author_email="huiw1128@gmail.com",
