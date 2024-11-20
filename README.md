@@ -1,3 +1,14 @@
+<pre style="color: #1E3D59">
+   _____  _____ ____  _____ 
+  |_   _|/ ____|  _ \/ ____|
+    | | | (___ | | | | (___  
+    | |  \___ \| | | |\___ \ 
+   _| |_ ____) | |_| |____) |
+  |_____|_____/|____/|_____/ 
+                             
+    Time Series Description
+</pre>
+
 # TSDS
 
 TSDS is a comprehensive Python package for time series analysis and surrogate data generation. It provides a wide range of tools for statistical analysis, preprocessing, feature extraction, and surrogate data generation for both univariate and multivariate time series.
