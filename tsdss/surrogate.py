@@ -718,10 +718,21 @@ def mvts_surrogate_pca(data, num_surrogates=1, n_components=None):
     return surrogate_data
 
 def mvts_surrogate_wavelet(data, num_surrogates=1, level=None):
+    """
+    Generate multivariate time series surrogate data using wavelet decomposition
+    
+    Args:
+        data: Original data, shape (N, d), N is sample size, d is dimension
+        num_surrogates: Number of surrogate data to generate
+        level: Wavelet decomposition level
+    
+    Returns:
+        Generated surrogate data, shape (num_surrogates, N, d)
+    """
     N, d = data.shape
     if level is None:
         level = int(np.log2(N))
-    level = min(level, int(np.log2(N)))  # Ensure not exceeding maximum possible levels
+    level = min(level, int(np.log2(N)))
     
     surrogate_data = np.zeros((num_surrogates, N, d))
     
@@ -729,18 +740,30 @@ def mvts_surrogate_wavelet(data, num_surrogates=1, level=None):
         surrogate = np.zeros_like(data)
         for i in range(d):
             try:
-                coeffs = dwt(data[:, i], level=level)
+                # Ensure signal length is power of 2 by padding
+                pad_length = int(2**np.ceil(np.log2(N))) - N
+                if pad_length > 0:
+                    padded_signal = np.pad(data[:, i], (0, pad_length), mode='reflect')
+                else:
+                    padded_signal = data[:, i]
+                
+                coeffs = dwt(padded_signal, level=level)
                 surrogate_coeffs = []
+                
                 for j, coef in enumerate(coeffs):
-                    if j == 0:
+                    if j == 0:  # Approximation coefficients
                         surrogate_coeffs.append(coef)
-                    else:
+                    else:  # Detail coefficients
                         surrogate_coef = iaaft(coef, n_iterations=100, num_surrogates=1)[0]
                         surrogate_coeffs.append(surrogate_coef)
                 
-                surrogate[:, i] = idwt(surrogate_coeffs)
+                # Reconstruct and trim to original length
+                reconstructed = idwt(surrogate_coeffs)[:N]
+                
+                # Amplitude adjustment
                 sorted_orig = np.sort(data[:, i])
-                surrogate[:, i] = sorted_orig[np.argsort(np.argsort(surrogate[:, i]))]
+                surrogate[:, i] = sorted_orig[np.argsort(np.argsort(reconstructed))]
+                
             except Exception as e:
                 print(f"Warning: Error processing dimension {i}: {str(e)}")
                 surrogate[:, i] = data[:, i]  # Use original data as fallback
