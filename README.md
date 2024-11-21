@@ -39,6 +39,24 @@ TSDSS is a comprehensive Python package for time series analysis and surrogate d
 - Multivariate surrogate methods
 - Bootstrap methods
 
+### Time Series Filtering
+
+Each filter has its own characteristics and use cases:
+
+- **Moving Average Filter**: Simple and effective for reducing random noise
+- **Exponential Filter**: Gives more weight to recent data points
+- **Savitzky-Golay Filter**: Preserves higher moments of the data while smoothing
+- **Kalman Filter**: Optimal for tracking time-varying signals
+- **Butterworth Filter**: Frequency domain filtering with flat response
+- **Median Filter**: Excellent for removing impulse noise and outliers
+
+For multivariate time series, the `multivariate_filter` function provides a unified interface to apply any of these filters to each dimension of the data. Key features:
+
+- Supports all single-variable filtering methods
+- Maintains correlations between dimensions
+- Handles errors gracefully for each dimension
+- Preserves the original data structure
+
 ## Installation
 
 ```bash
@@ -235,6 +253,56 @@ stat_samples_pd = stationary_bootstrap(ts_series, mean_block_length=50, num_boot
 #    - More suitable for time series with varying dependence structures
 ```
 
+### Time Series Filtering
+
+```python
+from tsdss import (
+    moving_average_filter,
+    exponential_filter,
+    savitzky_golay_filter,
+    kalman_filter,
+    butterworth_filter,
+    median_filter,
+    multivariate_filter
+)
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Univariate Filtering Example
+t = np.linspace(0, 10, 1000)
+noisy_signal = np.sin(2*np.pi*0.5*t) + 0.5*np.random.normal(0, 1, 1000)
+
+# Apply different filters
+ma_filtered = moving_average_filter(noisy_signal, window_size=5)
+ema_filtered = exponential_filter(noisy_signal, alpha=0.3)
+sg_filtered = savitzky_golay_filter(noisy_signal, window_size=15, poly_order=3)
+kalman_filtered = kalman_filter(noisy_signal, Q=1e-5, R=1e-2)
+
+# 2. Multivariate Filtering Example
+# Generate sample multivariate data
+mv_data = np.column_stack([
+    np.sin(2*np.pi*0.5*t) + 0.5*np.random.normal(0, 1, 1000),
+    np.cos(2*np.pi*0.3*t) + 0.3*np.random.normal(0, 1, 1000),
+    0.5*t + np.random.normal(0, 0.2, 1000)
+])
+
+# Apply multivariate filter
+mv_filtered = multivariate_filter(
+    mv_data,
+    filter_type='kalman',
+    Q=1e-5,
+    R=1e-2
+)
+
+# You can also try different filter types
+mv_ma = multivariate_filter(mv_data, filter_type='ma', window_size=5)
+mv_butter = multivariate_filter(
+    mv_data, 
+    filter_type='butter',
+    cutoff=0.1,
+    fs=100
+)
+```
 
 ## Performance
 
@@ -261,3 +329,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Version History
+
+### 0.2.0
+- Added comprehensive time series filtering functionality
+- Added multivariate filtering support
+- Improved documentation and examples
+- Bug fixes and performance improvements
+
+### 0.1.0
+- Initial release

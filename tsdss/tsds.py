@@ -819,6 +819,217 @@ def linear_regression(X, y):
         # Handle singular matrix case
         return np.nan
 
+def moving_average_filter(ts, window_size=3, center=True):
+    """
+    Simple Moving Average (SMA) filter
+    
+    Args:
+        ts: Time series data
+        window_size: Size of the moving window
+        center: If True, the window will be centered on the current point
+    
+    Returns:
+        Filtered time series
+    """
+    ts_array = np.asarray(ts)
+    if window_size % 2 == 0:
+        window_size += 1  # Ensure odd window size for centered MA
+    
+    weights = np.ones(window_size) / window_size
+    filtered = np.convolve(ts_array, weights, mode='valid')
+    
+    if center:
+        pad_size = (len(ts_array) - len(filtered)) // 2
+        filtered = np.pad(filtered, (pad_size, pad_size), mode='edge')
+    else:
+        filtered = np.pad(filtered, (0, len(ts_array) - len(filtered)), mode='edge')
+    
+    return filtered
+
+def exponential_filter(ts, alpha=0.3):
+    """
+    Exponential Moving Average (EMA) filter
+    
+    Args:
+        ts: Time series data
+        alpha: Smoothing factor (0 < alpha < 1)
+    
+    Returns:
+        Filtered time series
+    """
+    ts_array = np.asarray(ts)
+    filtered = np.zeros_like(ts_array, dtype=float)
+    filtered[0] = ts_array[0]
+    
+    for i in range(1, len(ts_array)):
+        filtered[i] = alpha * ts_array[i] + (1 - alpha) * filtered[i-1]
+    
+    return filtered
+
+def savitzky_golay_filter(ts, window_size=5, poly_order=2):
+    """
+    Savitzky-Golay filter for smoothing and derivatives
+    
+    Args:
+        ts: Time series data
+        window_size: Size of the moving window (must be odd)
+        poly_order: Order of the polynomial fit
+    
+    Returns:
+        Filtered time series
+    """
+    from scipy.signal import savgol_filter
+    
+    ts_array = np.asarray(ts)
+    if window_size % 2 == 0:
+        window_size += 1
+    
+    if window_size < poly_order + 2:
+        window_size = poly_order + 2
+        
+    if window_size > len(ts_array):
+        raise ValueError("Window size must be less than data length")
+        
+    return savgol_filter(ts_array, window_size, poly_order)
+
+def kalman_filter(ts, Q=1e-5, R=1e-2):
+    """
+    Kalman filter for time series smoothing
+    
+    Args:
+        ts: Time series data
+        Q: Process noise covariance
+        R: Measurement noise covariance
+    
+    Returns:
+        Filtered time series
+    """
+    ts_array = np.asarray(ts)
+    n = len(ts_array)
+    
+    # Initialization
+    filtered = np.zeros(n)
+    prediction = np.zeros(n)
+    P = np.zeros(n)  # Error covariance
+    K = np.zeros(n)  # Kalman gain
+    
+    # Initial estimates
+    filtered[0] = ts_array[0]
+    P[0] = 1
+    
+    # Forward pass
+    for i in range(1, n):
+        # Prediction
+        prediction[i] = filtered[i-1]
+        P_pred = P[i-1] + Q
+        
+        # Update
+        K[i] = P_pred / (P_pred + R)
+        filtered[i] = prediction[i] + K[i] * (ts_array[i] - prediction[i])
+        P[i] = (1 - K[i]) * P_pred
+    
+    return filtered
+
+def butterworth_filter(ts, cutoff, fs=1.0, order=4, btype='low'):
+    """
+    Butterworth filter
+    
+    Args:
+        ts: Time series data
+        cutoff: Cutoff frequency
+        fs: Sampling frequency
+        order: Filter order
+        btype: Filter type ('low', 'high', 'band', 'bandstop')
+    
+    Returns:
+        Filtered time series
+    """
+    from scipy.signal import butter, filtfilt
+    
+    ts_array = np.asarray(ts)
+    nyquist = fs / 2
+    normalized_cutoff = cutoff / nyquist
+    
+    b, a = butter(order, normalized_cutoff, btype=btype)
+    filtered = filtfilt(b, a, ts_array)
+    
+    return filtered
+
+def median_filter(ts, window_size=3):
+    """
+    Median filter for noise reduction and spike removal
+    
+    Args:
+        ts: Time series data
+        window_size: Size of the moving window
+    
+    Returns:
+        Filtered time series
+    """
+    from scipy.signal import medfilt
+    
+    ts_array = np.asarray(ts)
+    if window_size % 2 == 0:
+        window_size += 1
+        
+    return medfilt(ts_array, kernel_size=window_size)
+
+def multivariate_filter(data, filter_type='ma', **kwargs):
+    """
+    Apply filtering to multivariate time series data
+    
+    Args:
+        data: Multivariate time series data, shape (n_samples, n_features)
+        filter_type: Type of filter to apply
+            - 'ma': Moving average filter
+            - 'exp': Exponential filter
+            - 'sg': Savitzky-Golay filter
+            - 'kalman': Kalman filter
+            - 'butter': Butterworth filter
+            - 'median': Median filter
+        **kwargs: Additional arguments for specific filter types
+            - ma: window_size (int), center (bool)
+            - exp: alpha (float)
+            - sg: window_size (int), poly_order (int)
+            - kalman: Q (float), R (float)
+            - butter: cutoff (float), fs (float), order (int), btype (str)
+            - median: window_size (int)
+    
+    Returns:
+        Filtered multivariate time series, same shape as input
+    """
+    data = np.asarray(data)
+    if data.ndim == 1:
+        data = data.reshape(-1, 1)
+    elif data.ndim != 2:
+        raise ValueError("Input data must be 1D or 2D array")
+    
+    n_samples, n_features = data.shape
+    filtered_data = np.zeros_like(data)
+    
+    filter_funcs = {
+        'ma': moving_average_filter,
+        'exp': exponential_filter,
+        'sg': savitzky_golay_filter,
+        'kalman': kalman_filter,
+        'butter': butterworth_filter,
+        'median': median_filter
+    }
+    
+    if filter_type not in filter_funcs:
+        raise ValueError(f"Unknown filter type: {filter_type}")
+    
+    filter_func = filter_funcs[filter_type]
+    
+    for i in range(n_features):
+        try:
+            filtered_data[:, i] = filter_func(data[:, i], **kwargs)
+        except Exception as e:
+            print(f"Warning: Error filtering dimension {i}: {str(e)}")
+            filtered_data[:, i] = data[:, i]  # Use original data as fallback
+    
+    return filtered_data
+
 
 
 

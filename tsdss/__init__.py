@@ -15,7 +15,14 @@ from .tsds import (
     find_nearest_neighbors,
     calculate_diagonal_lengths,
     lyapunov_exponent,
-    linear_regression
+    linear_regression,
+    moving_average_filter,
+    exponential_filter,
+    savitzky_golay_filter,
+    kalman_filter,
+    butterworth_filter,
+    median_filter,
+    multivariate_filter
 )
 
 from .surrogate import (
@@ -70,5 +77,12 @@ __all__ = [
     's_transform',
     'inverse_s_transform',
     'block_bootstrap',
-    'stationary_bootstrap'
+    'stationary_bootstrap',
+    'moving_average_filter',
+    'exponential_filter',
+    'savitzky_golay_filter',
+    'kalman_filter',
+    'butterworth_filter',
+    'median_filter',
+    'multivariate_filter'
 ]

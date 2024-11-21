@@ -46,7 +46,7 @@ cpp_extension = [
 # Setup function configuration
 setup(
     name="tsdss",
-    version="0.1.0",
+    version="0.2.0",
     author="Hui Wang",
     author_email="huiw1128@gmail.com",
     description="Time Series Description",
